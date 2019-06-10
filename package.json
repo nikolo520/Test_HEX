@@ -1,0 +1,26 @@
+{
+  "name": "ai-reactapp",
+  "version": "0.0.1",
+  "description": "react integration with ai-agents",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andcastillo/ai-reactApp.git"
+  },
+  "keywords": [
+    "\"artifical",
+    "agent",
+    "react",
+    "cleaner",
+    "example\""
+  ],
+  "author": "andcastillo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andcastillo/ai-reactApp/issues"
+  },
+  "homepage": "https://github.com/andcastillo/ai-reactApp#readme"
+}
