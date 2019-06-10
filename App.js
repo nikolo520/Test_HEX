@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Shuffle, range, every,} from 'lodash'
 
 import CleanerProblem from './model/CleanerProblem';
 import CleanerAgent from './model/CleanerAgent';
@@ -27,14 +28,30 @@ class App extends Component {
             });
     }
     render() {
-        return (
-            <div>
-                <h1>Header</h1>
-                <h2>Content</h2>
-                <p data-myattribute="somevalue">This is the content!!! + {1 + Math.sin(1)}</p>
+        return (<div className="game">
+            <div className="game-board">
+                <Board />
             </div>
-        );
+            <div className="game-info">
+                <div>{/* TODO */}</div>
+                <ol>{/* TODO */}</ol>
+            </div>
+        </div>);
     }
 }
 
 export default App;
+
+class Board extends Component {
+    renderSquare(i) {
+        return <Square value={i} />
+    }
+}
+
+class Square extends Component {
+    render() {
+        return <button className="square">
+            {this.props.value}
+        </button>
+    }
+}
