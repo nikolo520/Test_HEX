@@ -29,7 +29,7 @@ class App extends Component {
                 let agentID = result.actions[result.actions.length - 1].agentID;
                 let squares = JSON.parse(JSON.stringify(result.data.world));
                 let agentState = result.data.states[agentID];
-                squares[agentState.y][agentState.x] = "X"
+                squares[agentState.y][agentState.x] = "X";
                 that.state = { squares };
             }
         });

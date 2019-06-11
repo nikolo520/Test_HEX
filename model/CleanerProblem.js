@@ -89,6 +89,10 @@ class CleanerProblem extends Problem {
         this.controller.setup({ world: problem, problem: this });
         this.controller.start(callbacks);
     }
+
+    interactiveSolve(proble, callbacks) {
+
+    }
 }
 
 module.exports = CleanerProblem;
