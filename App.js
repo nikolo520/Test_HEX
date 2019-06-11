@@ -2,14 +2,11 @@ import React, { Component } from 'react';
 //import {Shuffle, range, every,} from 'lodash'
 
 const problemContainer = require('./model/problemContainer');
-//import CleanerAgent from './model/CleanerAgent';
+import CleanerAgent from './model/CleanerAgent';
 
-//console.log(problemContainer)
-        
-//var myProblem = new CleanerProblem({ maxIterations: 12 });
-/*myProblem.addAgent("Smith", CleanerAgent, { x: 0, y: 2 });
+problemContainer.addAgent("Smith", CleanerAgent, { x: 0, y: 2 });
 
-myProblem.solve([
+problemContainer.solve([
     [0, 0, 0, 0],
     [0, 1, 1, -1],
     [0, 1, 0, 0],
@@ -23,8 +20,8 @@ myProblem.solve([
             world[agentState.y][agentState.x] = "X"
             console.log(world);
         },
-        onTurn0: (result) => { console.log("Turn: " + result) }
-    });*/
+        onTurn: (result) => { console.log("Turn: " + result) }
+    });
 
 class App extends Component {
     constructor(props) {
@@ -52,28 +49,28 @@ class Board extends Component {
 
     render() {
         const status = 'Next player: X';
-    
+
         return (
-          <div>
-            <div className="status">{status}</div>
-            <div className="board-row">
-              {this.renderSquare(0)}
-              {this.renderSquare(1)}
-              {this.renderSquare(2)}
+            <div>
+                <div className="status">{status}</div>
+                <div className="board-row">
+                    {this.renderSquare(0)}
+                    {this.renderSquare(1)}
+                    {this.renderSquare(2)}
+                </div>
+                <div className="board-row">
+                    {this.renderSquare(3)}
+                    {this.renderSquare(4)}
+                    {this.renderSquare(5)}
+                </div>
+                <div className="board-row">
+                    {this.renderSquare(6)}
+                    {this.renderSquare(7)}
+                    {this.renderSquare(8)}
+                </div>
             </div>
-            <div className="board-row">
-              {this.renderSquare(3)}
-              {this.renderSquare(4)}
-              {this.renderSquare(5)}
-            </div>
-            <div className="board-row">
-              {this.renderSquare(6)}
-              {this.renderSquare(7)}
-              {this.renderSquare(8)}
-            </div>
-          </div>
         );
-      }
+    }
 }
 
 class Square extends Component {

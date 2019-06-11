@@ -98,7 +98,7 @@ function min(data) {
     let min = 9999999;
     for (let i = 0; i < data.length; i++) {
         let row = data[i];
-        for (j = 0; j < row.length; j++) {
+        for (let j = 0; j < row.length; j++) {
             if (row[j] < min) {
                 min = row[j];
             }
