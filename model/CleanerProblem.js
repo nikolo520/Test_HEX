@@ -2,6 +2,7 @@
 const Problem = require('ai-agents').Problem;
 
 class CleanerProblem extends Problem {
+    
     constructor(args) {
         super(args);
         this.env = args;
