@@ -6,34 +6,42 @@ import CleanerAgent from './model/CleanerAgent';
 
 problemContainer.addAgent("Smith", CleanerAgent, { x: 0, y: 2 });
 
-problemContainer.solve([
-    [0, 0, 0, 0],
-    [0, 1, 1, -1],
-    [0, 1, 0, 0],
-    [0, 0, 0, 1]], {
-        onFinish: (result) => {
-            let agentID = result.actions[result.actions.length - 1].agentID;
-            console.log("Winner " + agentID);
-            console.log(result.actions);
-            let world = JSON.parse(JSON.stringify(result.data.world));
-            let agentState = result.data.states[agentID];
-            world[agentState.y][agentState.x] = "X"
-            console.log(world);
-        },
-        onTurn: (result) => { console.log("Turn: " + result) }
-    });
 
 class App extends Component {
     constructor(props) {
         super(props);
+        let map = [
+            [0, 0, 0, 0],
+            [0, 1, 1, -1],
+            [0, 1, 0, 0],
+            [0, 0, 0, 1]];
+        this.state =  {squares: map};
+        let that = this;
+
+        problemContainer.solve(map, {
+                onFinish: (result) => {
+                    let agentID = result.actions[result.actions.length - 1].agentID;
+                    let squares = JSON.parse(JSON.stringify(result.data.world));
+                    let agentState = result.data.states[agentID];
+                    squares[agentState.y][agentState.x] = "X"
+                    that.state = {squares};
+                },
+                onTurn: (result) => {
+                    let agentID = result.actions[result.actions.length - 1].agentID;
+                    let squares = JSON.parse(JSON.stringify(result.data.world));
+                    let agentState = result.data.states[agentID];
+                    squares[agentState.y][agentState.x] = "X"
+                    that.state = {squares};
+                }
+            });
     }
     render() {
         return (<div className="game">
             <div className="game-board">
-                <Board />
+                <Board value={this.state.squares}/>
             </div>
             <div className="game-info">
-                <div>{/* TODO */}</div>
+                <div>{}</div>
                 <ol>{/* TODO */}</ol>
             </div>
         </div>);
@@ -44,31 +52,20 @@ export default App;
 
 class Board extends Component {
     renderSquare(i) {
-        return <Square value={i} />
+        return <Square value={i}  />
     }
 
     render() {
         const status = 'Next player: X';
-
         return (
             <div>
                 <div className="status">{status}</div>
-                <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
+                {this.props.value.map(element => {
+                    return <div className="board-row">{
+                        element.map(cell => { return this.renderSquare(cell)})}</div>
+                    })}
             </div>
+
         );
     }
 }
