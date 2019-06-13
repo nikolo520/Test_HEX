@@ -80,18 +80,25 @@ class CleanerProblem extends Problem {
         return result;
     }
 
-    /**
+        /**
      * Solve the given problem
-     * @param {*} problem 
+     * @param {*} world 
      * @param {*} callbacks 
      */
-    solve(problem, callbacks) {
-        this.controller.setup({ world: problem, problem: this });
-        this.controller.start(callbacks);
+    solve(world, callbacks) {
+        this.controller.setup({ world: world, problem: this });
+        this.controller.start(callbacks, false);
     }
 
-    interactiveSolve(proble, callbacks) {
-
+        /**
+     * Returns an interable function that allow to execute the simulation step by step
+     * @param {*} world 
+     * @param {*} callbacks 
+     */
+    interactiveSolve(world, callbacks) {
+        console.log("sdsdsdsds");
+        this.controller.setup({ world: world, problem: this });
+        return this.controller.start(callbacks, true);
     }
 }
 

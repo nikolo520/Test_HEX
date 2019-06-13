@@ -17,31 +17,38 @@ class App extends Component {
         this.state = { squares: map };
         let that = this;
 
-        problemContainer.solve(map, {
+        this.iterator = problemContainer.interactiveSolve(map, {
             onFinish: (result) => {
                 let agentID = result.actions[result.actions.length - 1].agentID;
                 let squares = JSON.parse(JSON.stringify(result.data.world));
                 let agentState = result.data.states[agentID];
                 squares[agentState.y][agentState.x] = "X"
-                that.state = { squares };
+                //that.state = { squares };
+                this.setState({ squares });
             },
             onTurn: (result) => {
                 let agentID = result.actions[result.actions.length - 1].agentID;
                 let squares = JSON.parse(JSON.stringify(result.data.world));
                 let agentState = result.data.states[agentID];
                 squares[agentState.y][agentState.x] = "X";
-                that.state = { squares };
+                //that.state = { squares };
+                this.setState({ squares });
             }
         });
     }
+
+    nextMove() {
+        this.iterator.next();
+        //this.setState(this.state);
+    }
+
     render() {
         return (<div className="game">
             <div className="game-board">
                 <Board value={this.state.squares} />
             </div>
             <div className="game-info">
-                <div>{}</div>
-                <ol>{/* TODO */}</ol>
+                <div><button onClick={() => this.nextMove()}>Next</button></div>
             </div>
         </div>);
     }
@@ -56,7 +63,7 @@ class Board extends Component {
     }
 
     render() {
-        const status = 'State of the world';
+        const status = 'Agente de reflejo simple: Raton(X) y el queso(-1)';
         return (
             <div>
                 <div className="status">{status}</div>
