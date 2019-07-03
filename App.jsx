@@ -15,6 +15,7 @@ class App extends Component {
             [0, 1, 0, 0],
             [0, 0, 0, 1]];
         this.state = { squares: map };
+
         let that = this;
 
         this.iterator = problemContainer.interactiveSolve(map, {
@@ -24,6 +25,7 @@ class App extends Component {
                 let agentState = result.data.states[agentID];
                 squares[agentState.y][agentState.x] = "X"
                 //that.state = { squares };
+                //React fuction that fires the update of the view
                 this.setState({ squares });
             },
             onTurn: (result) => {
@@ -32,6 +34,7 @@ class App extends Component {
                 let agentState = result.data.states[agentID];
                 squares[agentState.y][agentState.x] = "X";
                 //that.state = { squares };
+                //React fuction that fires the update of the view
                 this.setState({ squares });
             }
         });
