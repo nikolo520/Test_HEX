@@ -1,82 +1,92 @@
 import React, { Component } from 'react';
 
-const problemContainer = require('./modelHex/problemContainer');
+import { observable, action, computed, decorate } from 'mobx';
+import { observer } from 'mobx-react';
+import { render } from 'react-dom';
+
+import random from 'lodash/random';
+import Hex, { midpointRadius, sideLength } from './modelHex/Hex';
+import Board from './modelHex/Board';
+import Map from './components/Map.jsx';
+
+import passedClickThreshold from './utils/passedClickThreshold';
+
+import problemContainer from './modelHex/problemContainer';
 import HextAgent from './modelHex/HexAgent';
 
-problemContainer.addAgent("1", HextAgent, {play: true});
-problemContainer.addAgent("2", HextAgent, {play: false});
+problemContainer.addAgent("1", HextAgent, { play: true });
+problemContainer.addAgent("2", HextAgent, { play: false });
 
-class App extends Component {
+const App = observer(class App extends Component {
     constructor(props) {
         super(props);
+        let gridSize = props.gridSize;
+        let viewport = props.viewport;
         let map = [[0, 0, 0, 0, 0],
-                   [0, 0, 0, 0, 0],
-                   [0, 0, 0, 0, 0],
-                   [0, 0, 0, 0, 0],
-                   [0, 0, 0, 0, 0]];
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0]];
 
-        this.state = { board: map, status: "New game" };
-
+        this.state = { board: new Board({ board: map }), status: "New game" };
         let that = this;
 
         this.iterator = problemContainer.interactiveSolve(map, {
             onFinish: (result) => {
                 let board = JSON.parse(JSON.stringify(result.data.world));
                 let actions = result.actions;
-                that.setState({ board, status: "Winer: " + actions[actions.length - 1].agentID});            },
+                that.setState({ board: new Board({ board }), status: 'Winer: ' + actions[actions.length - 1].agentID});
+            },
             onTurn: (result) => {
                 let board = JSON.parse(JSON.stringify(result.data.world));
                 let actions = result.actions;
-                that.setState({ board, status: "Last move: " + actions[actions.length - 1].agentID});
+                that.setState({ board: new Board({ board }), status: 'Last move: ' + actions[actions.length - 1].agentID });
             }
         });
     }
 
     nextMove() {
         this.iterator.next();
-        //this.setState(this.state);
     }
 
     render() {
+        let appState = this.state;
         return (<div className="game">
-            <div className="game-board">
-                <Board value={this.state} />
+            <div
+                style={{
+                    fontFamily: 'sans-serif',
+                    textAlign: 'center',
+                    width: '50vw',
+                    height: '50vh',
+                    overflow: 'hidden'
+                }}>
+                <Map app={appState.board} />
             </div>
             <div className="game-info">
                 <div><button onClick={() => this.nextMove()}>Next</button></div>
             </div>
-        </div>);
+            <div className="status">{appState.status}</div>
+        </div >);
     }
-}
+});
 
 export default App;
 
-class Board extends Component {
+decorate(App, {
+    viewport: observable,
+    gridSize: observable,
+    scale: observable,
+    lastMouse: observable,
+    isDragging: observable,
+    didMove: observable,
+    cells: observable.shallow,
+    selected: observable,
+    gridWidth: computed,
+    gridHeight: computed,
+    setSelected: action.bound,
+    centerOnSelected: action.bound,
+    mouseDown: action.bound,
+    mouseUp: action.bound,
+    mouseMove: action.bound
 
-    renderSquare(i) {
-        return <Square value={i} />
-    }
-
-    render() {
-        console.log(this.props)
-        const status = this.props.value.status;
-        return (
-            <div>
-                <div className="status">{status}</div>
-                {this.props.value.board.map(element => {
-                    return <div className="board-row">{
-                        element.map(cell => { return this.renderSquare(cell) })}</div>
-                })}
-            </div>
-
-        );
-    }
-}
-
-function Square(props) {
-    return (
-        <button className="square" onClick={props.onClick}>
-            {props.value}
-        </button>
-    );
-}
+});
