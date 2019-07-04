@@ -1,5 +1,5 @@
 const HexGame = require('./HexGame');
 
-var myProblem = new CleanerProblem({ size: 4});
+var myProblem = new HexGame({});
 
 module.exports = myProblem;

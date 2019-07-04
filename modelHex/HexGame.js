@@ -1,14 +1,11 @@
 
-const Matrix = require('ml-matrix');
-
 const Problem = require('ai-agents').Problem;
 
-class CleanerProblem extends Problem {
-    
+class HexGame extends Problem {
+
     constructor(args) {
         super(args);
         this.env = args;
-        this.board = Matrix.zeros(args.size);
     }
 
     /**
@@ -16,13 +13,34 @@ class CleanerProblem extends Problem {
      * @param {Object} solution 
      */
     goalTest(data) {
-        let size  = data.world.length;
         let board = data.world;
-        // Check if there is a line that connect any opposite sides of the matrix
-        //Check horizontal
-        
-
-        //Check vertical
+        let size = board.length;
+        for (let player of ['1', '2']) {
+            for (let i = 0; i < size; i++) {
+                let hex = -1;
+                if (player === "1") {
+                    if (board[i][0] === player) {
+                        hex = i * size;
+                    }
+                } else if (player === "2") {
+                    if (board[0][i] === player) {
+                        hex = i;
+                    }
+                }
+                if (hex >= 0) {
+                    let row = Math.floor(hex / size);
+                    let col = hex % size;
+                    // setVisited(neighbor, player, board);
+                    board[row][col] = -1;
+                    let status = check(hex, player, board);
+                    board[row][col] = player;
+                    if (status) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -32,28 +50,8 @@ class CleanerProblem extends Problem {
      * @param {*} agentID 
      */
     update(data, action, agentID) {
-        let map = data.world;
-        let agentState = data.states[agentID];
-        if (action == "UP") {
-            agentState.y -= 1;
-        }
-        if (action == "DOWN") {
-            agentState.y += 1;
-        }
-        if (action == "LEFT") {
-            agentState.x -= 1;
-        }
-        if (action == "RIGHT") {
-            agentState.x += 1;
-        }
-        if (action == "TAKE") {
-            map[agentState.y][agentState.x] = 0;
-        }
-        if (!data.interations) {
-            data.interations = 1;
-        } else {
-            data.interations++;
-        }
+        let board = data.world;
+        board[action[0]][action[1]] = agentID;
     }
 
     /**
@@ -62,61 +60,125 @@ class CleanerProblem extends Problem {
      * @returns and object with the information to be sent to the agent
      */
     perceptionForAgent(data, agentID) {
-        let map = data.world;
-        let agentState = data.states[agentID];
-        let x = agentState.x;
-        let y = agentState.y;
-        let result = [];
-        //LEFT
-        result.push(x > 0 ? map[y][x - 1] : 1);
-        //UP
-        result.push(y > 0 ? map[y - 1][x] : 1);
-        //RIGTH
-        result.push(x < map[0].length - 1 ? map[y][x + 1] : 1);
-        //DOWN
-        result.push(y < map.length - 1 ? map[y + 1][x] : 1);
-    
-        result = result.map(value => value > 0 ? 1 : 0);
-        //SMELL
-    
-        result.push(Math.abs(map[y][x]));
-        return result;
+        return data.world;
     }
 
-        /**
-     * Solve the given problem
-     * @param {*} world 
-     * @param {*} callbacks 
-     */
+    /**
+ * Solve the given problem
+ * @param {*} world 
+ * @param {*} callbacks 
+ */
     solve(world, callbacks) {
         this.controller.setup({ world: world, problem: this });
         this.controller.start(callbacks, false);
     }
 
-        /**
-     * Returns an interable function that allow to execute the simulation step by step
-     * @param {*} world 
-     * @param {*} callbacks 
-     */
+    /**
+ * Returns an interable function that allow to execute the simulation step by step
+ * @param {*} world 
+ * @param {*} callbacks 
+ */
     interactiveSolve(world, callbacks) {
-        console.log("sdsdsdsds");
         this.controller.setup({ world: world, problem: this });
         return this.controller.start(callbacks, true);
     }
 }
 
-module.exports = CleanerProblem;
+module.exports = HexGame;
 
+/**
+ * Chech if there exist a path from the currentHex to the target side of the board
+ * @param {Number} currentHex 
+ * @param {Number} player 
+ * @param {Matrix} board 
+ */
+function check(currentHex, player, board) {
+    if (isEndHex(currentHex, player, board.length)) {
+        return true;
+    }
+    let neighbors = getNeighborhood(currentHex, player, board);
+    for (let neighbor of neighbors) {
+        let size = board.length;
+        let row = Math.floor(neighbor / size);
+        let col = neighbor % size;
+        // setVisited(neighbor, player, board);
+        board[row][col] = -1;
+        let res =  check(neighbor, player, board);
+        // resetVisited(neighbor, player, board);
+        board[row][col] = player;
+        if (res == true) {
+            return true;
+        }
+    }
+    return false;
+}
 
-function min(data) {
-    let min = 9999999;
-    for (let i = 0; i < data.length; i++) {
-        let row = data[i];
-        for (let j = 0; j < row.length; j++) {
-            if (row[j] < min) {
-                min = row[j];
+/**
+ * Return an array of the neighbors of the currentHex that belongs to the same player. The 
+ * array contains the id of the hex. id = row * size + col
+ * @param {Number} currentHex 
+ * @param {Number} player 
+ * @param {Matrix} board 
+ */
+function getNeighborhood(currentHex, player, board) {
+    let size = board.length;
+    let row = Math.floor(currentHex / size);
+    let col = currentHex % size;
+    let result = [];
+    if (row > 0 && board[row - 1][col] === player) {
+        result.push(col + (row - 1) * size);
+    }
+    if (row > 0 && col + 1 < size && board[row - 1][col + 1] === player) {
+        result.push(col + 1 + (row - 1) * size);
+    }
+    if (col > 0 && board[row][col - 1] === player) {
+        result.push(col - 1 + row * size);
+    }
+    if (col + 1 < size && board[row][col + 1] === player) {
+        result.push(col + 1 + row * size);
+    }
+    if (row + 1 < size && board[row + 1][col] === player) {
+        result.push(col + (row + 1) * size);
+    }
+    if (row + 1 < size && col > 0 && board[row + 1][col - 1] === player) {
+        result.push(col - 1 + (row + 1) * size);
+    }
+
+    return result;
+}
+
+/**
+ * Chech if the current hex is a the opposite border of the board
+ * @param {Number} currentHex 
+ * @param {Number} player 
+ * @param {Number} size 
+ */
+function isEndHex(currentHex, player, size) {
+    if (player === "1") {
+        if ((currentHex + 1) % size === 0) {
+            return true;
+        }
+    } else if (player === "2") {
+        if (Math.floor(currentHex / size) === size - 1) {
+            return true;
+        }
+    }
+}
+
+/**
+ * Return an array containing the id of the empty hex in the board
+ * id = row * size + col;
+ * @param {Matrix} board 
+ */
+function getEmptyHex(board) {
+    let result = [];
+    let size = board.length;
+    for (let k = 0; k < size; k++) {
+        for (let j = 0; j < size; j++) {
+            if (board[k][j] === 0) {
+                result.push(k * size + j);
             }
         }
     }
-    return min;
+    return result;
 }

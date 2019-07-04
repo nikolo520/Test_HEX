@@ -1,37 +1,35 @@
 const Agent = require('ai-agents').Agent;
 
-class CleanerAgent extends Agent {
+class HexAgent extends Agent {
     constructor(value) {
         super(value);
-        this.table = {
-            "0,0,0,0,0": "UP",
-            "0,0,0,1,0": "UP",
-            "0,0,1,0,0": "UP",
-            "0,0,1,1,0": "LEFT",
-            "0,1,0,0,0": "LEFT",
-            "0,1,0,1,0": "RIGHT",
-            "0,1,1,0,0": "LEFT",
-            "0,1,1,1,0": "LEFT",
-            "1,0,0,0,0": "UP",
-            "1,0,0,1,0": "RIGHT", 
-            "1,0,1,0,0": "DOWN",
-            "1,0,1,1,0": "UP",
-            "1,1,0,0,0": "RIGTH",
-            "1,1,0,1,0": "RIGHT",
-            "1,1,1,0,0": "DOWN",
-            "default": "TAKE"
-                    };
     }
     
     send() {
-        let viewKey = this.perception.join();
-        if(this.table[viewKey]) {
-            return this.table[viewKey];
-        } else {
-            return this.table["default"];
-        }
+        let board = this.perception;
+        let available = getEmptyHex(board);
+        let move = available[Math.round(Math.random() * ( available.length -1 ))];
+        return [Math.floor (move / board.length), move % board.length];
     }
 
 }
 
-module.exports = CleanerAgent;
+module.exports = HexAgent;
+
+/**
+ * Return an array containing the id of the empty hex in the board
+ * id = row * size + col;
+ * @param {Matrix} board 
+ */
+function getEmptyHex(board) {
+    let result = [];
+    let size = board.length;
+    for (let k = 0; k < size; k++) {
+        for (let j = 0; j < size; j++) {
+            if (board[k][j] === 0) {
+                result.push(k * size + j);
+            }
+        }
+    }
+    return result;
+}
