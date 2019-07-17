@@ -35,7 +35,7 @@ export default class HexModel {
       case 1:
         return "red";
       case 2:
-        return "green";
+        return "black";
       case 3:
         return "orange";
       case 4:
