@@ -9,6 +9,7 @@ class HexAgent extends Agent {
      * return a new move. The move is an array of two integers, representing the
      * row and column number of the hex to play. If the given movement is not valid,
      * the Hex controller will perform a random valid movement for the player
+     * Example: [1, 1]
      */
     send() {
         let board = this.perception;
