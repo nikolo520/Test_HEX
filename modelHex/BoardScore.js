@@ -44,7 +44,6 @@ function boardPath(board) {
         }
     }
 
-
     route.addNode(player + 'T', neighborsT);
     route.addNode(player + 'X', neighborsX);
 
@@ -110,6 +109,6 @@ function transpose(board) {
     return boardT;
 }
 
-
-let board = [[0, 0, 0], [0, '1', 0], [0, 0, 0]];
-console.log(boardScore(board, '2'));
+module.exports = boardScore;
+//let board = [[0, 0, 0], [0, '1', 0], [0, 0, 0]];
+//console.log(boardScore(board, '2'));
