@@ -17,12 +17,6 @@ const offsets = [
 ];
 
 export default class HexModel {
-  /*id = "";
-  x = null;
-  y = null;
-  type = 0;
-  position = {};
-  ref = React.createRef();*/
 
   constructor(id, x, y, type) {
     set(this, { id, x, y, type });
@@ -31,11 +25,11 @@ export default class HexModel {
   get fill() {
     switch (this.type) {
       case 0:
-        return "white";
+        return "SILVER";
       case 1:
-        return "red";
+        return "LIGHTCORAL";
       case 2:
-        return "black";
+        return "TEAL";
       case 3:
         return "orange";
       case 4:

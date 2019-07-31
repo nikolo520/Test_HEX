@@ -28,19 +28,19 @@ const App = observer(class App extends Component {
         [0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0]];
 
-        this.state = { board: new Board({ board: map }), status: "New game" };
+        this.state = { board: new Board({ board: map }), status: 'Player 1' };
         let that = this;
 
         this.iterator = problemContainer.interactiveSolve(map, {
             onFinish: (result) => {
                 let board = JSON.parse(JSON.stringify(result.data.world));
                 let actions = result.actions;
-                that.setState({ board: new Board({ board }), status: 'Winer: ' + actions[actions.length - 1].agentID});
+                that.setState({ board: new Board({ board }), status: 'Winner: ' + actions[actions.length - 1].agentID });
             },
             onTurn: (result) => {
                 let board = JSON.parse(JSON.stringify(result.data.world));
                 let actions = result.actions;
-                that.setState({ board: new Board({ board }), status: 'Last move: ' + actions[actions.length - 1].agentID });
+                that.setState({ board: new Board({ board }), status: 'Player ' + (actions[actions.length - 1].agentID == '1' ? '2' : '1') });
             }
         });
     }
@@ -51,22 +51,37 @@ const App = observer(class App extends Component {
 
     render() {
         let appState = this.state;
-        return (<div className="game">
-            <div
-                style={{
-                    fontFamily: 'sans-serif',
-                    textAlign: 'center',
-                    width: '50vw',
-                    height: '50vh',
-                    overflow: 'hidden'
-                }}>
-                <Map app={appState.board} />
-            </div>
-            <div className="game-info">
-                <div><button onClick={() => this.nextMove()}>Next</button></div>
-            </div>
-            <div className="status">{appState.status}</div>
-        </div >);
+        return (
+            <div className="game">
+                <table>
+                    <tr>
+                        <td></td>
+                        <td style={{ 'background-color': 'TEAL', 'color': 'TEAL' }}>I</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style={{ 'background-color': 'LIGHTCORAL', 'color': 'LIGHTCORAL' }}>__</td>
+                        <td><div style={{ 'background-color': 'OLIVE' }}>
+                            <Map app={appState.board} /></div>
+                        </td>
+                        <td style={{ 'background-color': 'LIGHTCORAL', 'color': 'LIGHTCORAL' }}>__</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style={{ 'background-color': 'TEAL', 'color': 'TEAL' }}>I</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td><div className="game-info">
+                            <div><button onClick={() => this.nextMove()}>{appState.status}</button></div>
+                        </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div >
+        );
     }
 });
 
