@@ -25,7 +25,7 @@ export default class HexModel {
   get fill() {
     switch (this.type) {
       case 0:
-        return "SILVER";
+        return "LIGHTGRAY";
       case 1:
         return "LIGHTCORAL";
       case 2:

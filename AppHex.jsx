@@ -22,11 +22,14 @@ const App = observer(class App extends Component {
         super(props);
         let gridSize = props.gridSize;
         let viewport = props.viewport;
-        let map = [[0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0]];
+        let size = 7;
+        let map = new Array(size);
+        for (let i = 0; i < map.length; i++) {
+            map[i] = new Array(size);
+            for (let k = 0; k < map.length; k++) {
+                map[i][k] = 0;
+            }
+        }
 
         this.state = { board: new Board({ board: map }), status: 'Player 1' };
         let that = this;
@@ -61,7 +64,7 @@ const App = observer(class App extends Component {
                     </tr>
                     <tr>
                         <td style={{ 'background-color': 'LIGHTCORAL', 'color': 'LIGHTCORAL' }}>__</td>
-                        <td><div style={{ 'background-color': 'OLIVE' }}>
+                        <td><div style={{ 'background-color': 'SILVER' }}>
                             <Map app={appState.board} /></div>
                         </td>
                         <td style={{ 'background-color': 'LIGHTCORAL', 'color': 'LIGHTCORAL' }}>__</td>
