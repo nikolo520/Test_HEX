@@ -3,6 +3,9 @@ import random from 'lodash/random';
 import Hex, { midpointRadius, sideLength } from './Hex';
 import passedClickThreshold from '../utils/passedClickThreshold';
 
+//http://codewithflair.org/Practice-1-An-interactive-board-with-React-js/
+
+// https://codesandbox.io/s/w0l4070wn5
 function generateGrid(board) {
     let size = board.length;
     const result = [];
