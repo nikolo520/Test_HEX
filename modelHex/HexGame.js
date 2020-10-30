@@ -1,5 +1,7 @@
 
 const Problem = require('ai-agents').Problem;
+const getEmptyHex = require('./getEmptyHex');
+const gt = require('./goalTest');
 
 class HexGame extends Problem {
 
@@ -10,42 +12,15 @@ class HexGame extends Problem {
     }
 
     /**
-     * Check if the given solution solves the problem. You must override
+     * Check if the given solution solves the problem. DO NOT MODIFY
      * @param {Object} solution 
      */
     goalTest(data) {
-        let board = data.world;
-        let size = board.length;
-        for (let player of ['1', '2']) {
-            for (let i = 0; i < size; i++) {
-                let hex = -1;
-                if (player === "1") {
-                    if (board[i][0] === player) {
-                        hex = i * size;
-                    }
-                } else if (player === "2") {
-                    if (board[0][i] === player) {
-                        hex = i;
-                    }
-                }
-                if (hex >= 0) {
-                    let row = Math.floor(hex / size);
-                    let col = hex % size;
-                    // setVisited(neighbor, player, board);
-                    board[row][col] = -1;
-                    let status = check(hex, player, board);
-                    board[row][col] = player;
-                    if (status) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        return gt(data.world);
     }
 
     /**
-     * The transition model. Tells how to change the state (data) based on the given actions. You must override
+     * The transition model. Tells how to change the state (data) based on the given actions.  DO NOT MODIFY
      * @param {} data 
      * @param {*} action 
      * @param {*} agentID 
@@ -53,25 +28,25 @@ class HexGame extends Problem {
     update(data, action, agentID) {
         let board = data.world;
         let size = board.length;
-        
+
         // As first move, the center is forgiven.
         let checkRule0 = true;
         if (this.nTurn == 0) {
-            if (action[0] === Math.floor(size / 2) 
+            if (action[0] === Math.floor(size / 2)
                 && action[1] === Math.floor(size / 2)) {
-                    checkRule0 = false; 
+                checkRule0 = false;
             }
         }
         // Check if this is legal move?
-        if (action[0] >= 0 && action[0] < size 
+        if (action[0] >= 0 && action[0] < size
             && action[1] >= 0 && action[1] < size
             && board[action[0]][action[1]] === 0 && checkRule0) {
-                board[action[0]][action[1]] = agentID;
+            board[action[0]][action[1]] = agentID;
         } else {
             // Make a random move for this player if the movement is not valid
             let available = getEmptyHex(board);
-            let move = available[Math.round(Math.random() * ( available.length -1 ))];
-            action[0] = Math.floor (move / board.length);
+            let move = available[Math.round(Math.random() * (available.length - 1))];
+            action[0] = Math.floor(move / board.length);
             action[1] = move % board.length;
             board[action[0]][action[1]] = agentID;
         }
@@ -83,7 +58,7 @@ class HexGame extends Problem {
      * @returns and object with the information to be sent to the agent
      */
     perceptionForAgent(data, agentID) {
-        return data.world;
+        return data.world.map(arr => arr.slice());
     }
 
     /**
@@ -186,24 +161,6 @@ function isEndHex(currentHex, player, size) {
             return true;
         }
     }
-}
-
-/**
- * Return an array containing the id of the empty hex in the board
- * id = row * size + col;
- * @param {Matrix} board 
- */
-function getEmptyHex(board) {
-    let result = [];
-    let size = board.length;
-    for (let k = 0; k < size; k++) {
-        for (let j = 0; j < size; j++) {
-            if (board[k][j] === 0) {
-                result.push(k * size + j);
-            }
-        }
-    }
-    return result;
 }
 
 
