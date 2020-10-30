@@ -50,6 +50,7 @@ class HexGame extends Problem {
             action[1] = move % board.length;
             board[action[0]][action[1]] = agentID;
         }
+        this.nTurn++;
     }
 
     /**
