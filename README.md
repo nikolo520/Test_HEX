@@ -15,4 +15,8 @@ npm install
 
 ```bash
 npm start
+```
 
+## Description
+
+Your entry point must be the [HextAgent](https://github.com/andcastillo/ai-reactApp/blob/master/modelHex/HexAgent.js). Basically, you must to implement the **send()** function in order to play better moves each turn. As this is a debug tool, both players will use the same logic, although you are free to modify the source code to admit 2 different implementations of the HexAgent.
